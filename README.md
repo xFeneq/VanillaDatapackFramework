@@ -1,12 +1,16 @@
 # VanillaDatapackFramework [VDF]
 
-Welcome to the VanillaDatapackFramework [VDF], an elite, production-ready template designed for Minecraft 1.21 and beyond. This framework completely abandons legacy NBT formats in favor of modern Data Components and emphasizes maximum server performance (TPS).
+Hey there! **VanillaDatapackFramework (VDF)** is a clean, ready-to-use template for creating data packs in Minecraft 1.21 and newer.
 
-## Version Compatibility & Pack Formats
+This framework helps you write modern, fast, and organized code. It completely drops the old NBT format in favor of Minecraft's new **Data Components**, keeping your server running smoothly without lag (maximizing TPS).
 
-You do not need to rewrite your code when Minecraft updates. To upgrade the data pack for newer versions, simply change the `pack_format` value inside your `pack.mcmeta` file.
+---
 
-**Format Reference Guide:**
+## 🎮 Version Compatibility & Pack Formats
+
+When Minecraft updates, you usually don't need to rewrite your code! To upgrade your data pack for a newer version, just change the `pack_format` number inside your `pack.mcmeta` file.
+
+**Quick Reference Guide:**
 - `48` = Minecraft 1.21 - 1.21.1
 - `57` = Minecraft 1.21.2 - 1.21.3
 - `61` = Minecraft 1.21.4
@@ -18,36 +22,42 @@ You do not need to rewrite your code when Minecraft updates. To upgrade the data
 - `101` = Minecraft 26.1 - 26.1.2
 - `107` = Minecraft 26.2
 
-*(For more details and future versions beyond 26.2, please consult the official [Minecraft Wiki Data Pack Format](https://minecraft.wiki/w/Pack_format#Data_pack_format_history)).*
+*(Looking for future versions? Check out the official [Minecraft Wiki Data Pack Format](https://minecraft.wiki/w/Pack_format#Data_pack_format_history) page).*
 
-## Framework Architecture
+---
 
-Understanding the workspace is crucial for maintaining clean and optimized code:
+## 📂 Project Structure Explained
+
+Here is a quick look at what goes into each folder so you can keep your project nice and tidy:
 
 * **`data/minecraft/tags/function/`**
-  Contains `load.json` and `tick.json`. These interface directly with the Minecraft engine to execute your root functions upon initialization and every game tick (20 times per second).
+  Contains `load.json` (runs once when the world/server starts) and `tick.json` (runs constantly, 20 times per second). This is where you trigger your main scripts.
 * **`data/vdf/function/`**
-  The core logic directory for your scripts (`.mcfunction` files). Keep these modular and organized.
+  The main folder for your command files (`.mcfunction`). This is where all your gameplay logic lives.
 * **`data/vdf/predicate/`**
-  Highly optimized JSON files for complex conditional checks (e.g., verifying item components, entity states). Always use these over raw NBT checks in your execute commands.
+  Folder for "predicates" (conditions written in JSON). Use these to quickly check things like "is the player sneaking?" or "is the item right-clicked?". They are much better for server performance than heavy `/execute` commands.
 * **`data/vdf/advancement/`**
-  Event-driven triggers. Use these to passively detect player actions (like consuming an item, attacking, or taking damage) instantly without straining the server's tick loop.
+  Advancements used as "triggers". They let you instantly detect player actions (like eating an item, attacking, or taking damage) right when they happen, without putting a constant load on the server.
 
-## Elite Development Principles
+---
 
-### 1. Data Components Over NBT
-Legacy item NBT (e.g., `{CustomModelData:1}`) is completely obsolete. You must strictly use Data Components.
-- **Creation:** `give @s minecraft:diamond_sword[minecraft:custom_model_data=7001]`
-- **Modification:** `/item modify entity @s weapon.mainhand ...`
+## 💡 4 Golden Rules for Data Pack Devs
 
-### 2. Server Optimization (TPS) First
-Never place heavy, constant checks inside `tick.mcfunction`.
-- **Bad Practice:** Running `/execute as @a[nbt={...}] run ...` 20 times a second.
-- **Elite Practice:** Use an advancement trigger to run a target function *only* in the exact moment the required event occurs.
+To keep your data pack modern and lag-free, try to follow these simple practices:
 
-### 3. Modern Data Storage
-Do not summon invisible `armor_stand` or `marker` entities to hold variables unless a specific 3D world coordinate is absolutely required. Always use `storage` for global variables, states, and mathematical operations:
-- `data modify storage vdf:main core.my_variable set value 1`
+### 1. Use Data Components, Forget Old NBT
+The old way of adding custom data to items (like `{CustomModelData:1}`) is completely obsolete in modern Minecraft. Always use square brackets for Data Components:
+- **How to give an item:** `/give @s minecraft:diamond_sword[minecraft:custom_model_data=7001]`
+- **How to modify an item:** Use the `/item modify ...` command.
+
+### 2. Put Server Performance (TPS) First
+Try not to put heavy, non-stop checks inside your `tick.mcfunction` file (since it runs 20 times every second).
+- **Bad Practice:** Constantly running `/execute as @a[...] run ...` every single tick.
+- **Good Practice:** Use a hidden advancement trigger that fires your function *only* in the exact second the player does what you need.
+
+### 3. Store Data in Storage, Not on Entities
+Don't summon invisible `armor_stand` or `marker` entities just to hold variables or scoreboards (unless you absolutely need a specific 3D location in the world). Use the built-in game `storage` instead—it's way faster:
+- `/data modify storage vdf:main core.my_variable set value 1`
 
 ### 4. Resource Pack Integration
-This framework is built with visual modifications in mind. When designing custom items, map your `minecraft:custom_model_data` component IDs directly to the model overrides in your Resource Pack. Use standardized ID ranges (e.g., 7000-7999 for custom weapons) to prevent conflicts.
+This template is built with custom textures and models in mind. When designing custom items, map your `custom_model_data` IDs to your Resource Pack model overrides. Use clean ID ranges (for example, numbers 7000-7999 for custom weapons only) so your items never conflict with each other.

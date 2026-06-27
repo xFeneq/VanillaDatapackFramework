@@ -30,6 +30,10 @@ When Minecraft updates, you usually don't need to rewrite your code! To upgrade 
 
 Here is a quick look at what goes into each folder so you can keep your project nice and tidy:
 
+* **`pack.mcmeta`**
+  The core metadata file that Minecraft reads to identify your data pack and its format version.
+* **`pack.png`**
+  The official 64x64 or 128x128 PNG icon for your data pack, displayed in the game's pack selection menu.
 * **`data/minecraft/tags/function/`**
   Contains `load.json` (runs once when the world/server starts) and `tick.json` (runs constantly, 20 times per second). This is where you trigger your main scripts.
 * **`data/vdf/function/`**
